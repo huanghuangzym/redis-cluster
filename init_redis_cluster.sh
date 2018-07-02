@@ -1,8 +1,20 @@
 #!/bin/sh
 
+conf_path=/conf/redis.conf
+
+if [ -n "${REDIS_PASSWD}" ]; then
+    client_path=/var/lib/gems/2.3.0/gems/redis-3.3.5/lib/redis/client.rb
+    sed -i "s/:password => nil/:password => '${REDIS_PASSWD}'/g" ${client_path}
+fi
+
+
+if [ -n "${REBUILDCLUSTER}" ]; then
+    rm -rf /data/nodes.conf
+fi
 
 # run redis server
 /usr/local/bin/redis-server /conf/redis.conf &
+
 
 # wait redis to start
 i=100
@@ -42,8 +54,12 @@ do
 done
 
 
-echo "yes" | /usr/local/bin/redis-trib create --replicas ${REPLICAS_NUM} ${REDIS_TRIB_PARA}
 
+
+
+if [ -n "${MASTER}" ]; then
+		echo "yes" | /usr/local/bin/redis-trib create --replicas ${REPLICAS_NUM} ${REDIS_TRIB_PARA}
+fi
 
 # keep the container at foreground
 log_file=/data/redis.log

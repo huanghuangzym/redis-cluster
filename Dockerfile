@@ -4,6 +4,7 @@ RUN apt-get -y update \
   && apt-get -y upgrade \
   && apt-get -y install procps net-tools \
   && apt-get -y install supervisor \
+  && apt-get -y install vim \
   && apt-get -y --no-install-recommends install ruby wget \
   && gem install redis -v 3.3.5 \
   && apt-get -y autoremove \
